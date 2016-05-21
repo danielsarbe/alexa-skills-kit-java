@@ -7,7 +7,7 @@
  * <p>
  * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
-package historybuff;
+package teamoptimizer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -60,7 +60,7 @@ import com.amazon.speech.ui.SimpleCard;
  * <p>
  * <b>One-shot model</b>
  * <p>
- * User: "Alexa, ask History Buff what happened on August thirtieth."
+ * User: "Alexa, ask optimizer what happened on August thirtieth."
  * <p>
  * Alexa: "For August thirtieth, in 2003, [...] . Wanna go deeper in history?"
  * <p>
@@ -88,8 +88,8 @@ import com.amazon.speech.ui.SimpleCard;
  * Alexa: "Good bye!"
  * <p>
  */
-public class HistoryBuffSpeechlet implements Speechlet {
-    private static final Logger log = LoggerFactory.getLogger(HistoryBuffSpeechlet.class);
+public class TeamOptimizerSpeechlet implements Speechlet {
+    private static final Logger log = LoggerFactory.getLogger(TeamOptimizerSpeechlet.class);
 
     /**
      * URL prefix to download history content from Wikipedia.
@@ -177,16 +177,25 @@ public class HistoryBuffSpeechlet implements Speechlet {
         Intent intent = request.getIntent();
         String intentName = intent.getName();
 
-        if ("GetFirstEventIntent".equals(intentName)) {
-            return handleFirstEventRequest(intent, session);
-        } else if ("RawText".equals(intentName)) {
+//        if ("GetFirstEventIntent".equals(intentName)) {
+//            return handleFirstEventRequest(intent, session);
+//        } else
+        if ("RawText".equals(intentName)) {
             return handleRawTextFirstEventRequest(intent, session);
-        } else if ("GetNextEventIntent".equals(intentName)) {
-            return handleNextEventRequest(session);
+        } else if ("Bugs".equals(intentName)) {
+            return handleOpenBugsRequest(intent, session);
+        } else if ("Task".equals(intentName)) {
+            return handleTaskRequest(intent, session);
+        } else if (("BugSimple".equals(intentName)) || ("BugComplex".equals(intentName)) || ("CreateBug".equals(intentName))) {
+            return handleCreateBugsRequest(intent, session);
+        } else if ("Project".equals(intentName)) {
+            return handleProjectRequest(intent, session);
+//        } else if ("GetNextEventIntent".equals(intentName)) {
+//            return handleNextEventRequest(session);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             // Create the plain text output.
             String speechOutput =
-                    "With History Buff, you can get"
+                    "With TeamOptimze you can get"
                             + " historical events for any day of the year."
                             + " For example, you could say today,"
                             + " or August thirtieth, or you can say exit. Now, which day do you want?";
@@ -225,13 +234,12 @@ public class HistoryBuffSpeechlet implements Speechlet {
      */
 
     private SpeechletResponse getWelcomeResponse() {
-        String speechOutput = "History buff. What day do you want events for?";
+        String speechOutput = "Team Optimizer";
         // If the user either does not reply to the welcome message or says something that is not
         // understood, they will be prompted again with this text.
         String repromptText =
-                "With History Buff, you can get historical events for any day of the year. "
-                        + " For example, you could say today, or August thirtieth."
-                        + " Now, which day do you want?";
+                "With Team Optimizer, you can help your team become more productive and efficient. "
+                        + " Now, which do you want to do?";
 
         return newAskResponse(speechOutput, false, repromptText, false);
     }
@@ -405,6 +413,180 @@ public class HistoryBuffSpeechlet implements Speechlet {
         // to the session attributes
         session.setAttribute(SESSION_INTENT_INDEX, PAGINATION_SIZE);
         session.setAttribute(SESSION_INTENT_TEXT, intentAsText);
+
+        SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
+        response.setCard(card);
+        return response;
+    }
+
+
+    private SpeechletResponse handleOpenBugsRequest(Intent intent, Session session) {
+        //Slot bugs = intent.getSlot("person");
+
+        String speechPrefixContent = "<p>We have 7 P1 P2 bugs open</p>";
+        String cardPrefixContent = "We have 7 P1 P2 bugs open";
+        String cardTitle = "We have 7 P1 P2 bugs open";
+
+        String speechOutput = "";
+
+        StringBuilder speechOutputBuilder = new StringBuilder();
+        speechOutputBuilder.append(speechPrefixContent);
+
+        StringBuilder cardOutputBuilder = new StringBuilder();
+        cardOutputBuilder.append(cardPrefixContent);
+
+        speechOutputBuilder.append(" Wanna do anything else?");
+        cardOutputBuilder.append(" Wanna do anything else?");
+
+        speechOutput = speechOutputBuilder.toString();
+
+
+        // Create the Simple card content.
+        SimpleCard card = new SimpleCard();
+        card.setTitle(cardTitle);
+        card.setContent(cardOutputBuilder.toString());
+
+        // After reading the first 3 events, set the count to 3 and add the events
+        // to the session attributes
+        //session.setAttribute(SESSION_INTENT_INDEX, PAGINATION_SIZE);
+        //session.setAttribute(SESSION_INTENT_TEXT, intentAsText);
+
+        String repromptText =
+                "With optimizer, you can say anything."
+                        + " Now, which do you want me to record for you?";
+        SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
+        //response.setShouldEndSession(false);
+        response.setCard(card);
+        return response;
+    }
+
+    private SpeechletResponse handleProjectRequest(Intent intent, Session session) {
+        //Slot bugs = intent.getSlot("person");
+
+        String speechPrefixContent = "<p>We have 12 days till the next release</p>";
+        String cardPrefixContent = "We have 12 days till the next release";
+        String cardTitle = "We have 12 days till the next release";
+
+        String speechOutput = "";
+
+        StringBuilder speechOutputBuilder = new StringBuilder();
+        speechOutputBuilder.append(speechPrefixContent);
+
+        StringBuilder cardOutputBuilder = new StringBuilder();
+        cardOutputBuilder.append(cardPrefixContent);
+
+        speechOutputBuilder.append(" Wanna do anything else?");
+        cardOutputBuilder.append(" Wanna do anything else?");
+
+        speechOutput = speechOutputBuilder.toString();
+
+
+        // Create the Simple card content.
+        SimpleCard card = new SimpleCard();
+        card.setTitle(cardTitle);
+        card.setContent(cardOutputBuilder.toString());
+
+        // After reading the first 3 events, set the count to 3 and add the events
+        // to the session attributes
+        //session.setAttribute(SESSION_INTENT_INDEX, PAGINATION_SIZE);
+        //session.setAttribute(SESSION_INTENT_TEXT, intentAsText);
+
+        String repromptText =
+                "With optimizer, you can say anything."
+                        + " Now, which do you want me to record for you?";
+        SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
+        //response.setShouldEndSession(false);
+        response.setCard(card);
+        return response;
+    }
+
+    private SpeechletResponse handleTaskRequest(Intent intent, Session session) {
+        Slot phrase = intent.getSlot("phrase");
+        Slot person = intent.getSlot("person");
+
+        String speechPrefixContent = "<p>A new task " + phrase.getValue() + " was created for " + person.getValue() + "</p>";
+        String cardPrefixContent = "A new task " + phrase.getValue() + " was created for " + person.getValue();
+        String cardTitle = "A new task " + phrase.getValue() + " was created for " + person.getValue();
+
+        String speechOutput = "";
+
+        StringBuilder speechOutputBuilder = new StringBuilder();
+        speechOutputBuilder.append(speechPrefixContent);
+
+        StringBuilder cardOutputBuilder = new StringBuilder();
+        cardOutputBuilder.append(cardPrefixContent);
+
+        speechOutputBuilder.append(" Wanna do anything else?");
+        cardOutputBuilder.append(" Wanna do anything else?");
+
+        speechOutput = speechOutputBuilder.toString();
+
+
+        // Create the Simple card content.
+        SimpleCard card = new SimpleCard();
+        card.setTitle(cardTitle);
+        card.setContent(cardOutputBuilder.toString());
+
+        // After reading the first 3 events, set the count to 3 and add the events
+        // to the session attributes
+        //session.setAttribute(SESSION_INTENT_INDEX, PAGINATION_SIZE);
+        //session.setAttribute(SESSION_INTENT_TEXT, intentAsText);
+
+        String repromptText =
+                "With optimizer, you can say anything."
+                        + " Now, which do you want me to record for you?";
+        SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
+        //response.setShouldEndSession(false);
+        response.setCard(card);
+        return response;
+    }
+
+    private SpeechletResponse handleCreateBugsRequest(Intent intent, Session session) {
+        String person = (intent.getSlot("person") == null) ? "" : intent.getSlot("person").getValue();
+        String priority = (intent.getSlot("priority") == null) ? "" : intent.getSlot("priority").getValue();
+        String bugdescription = (intent.getSlot("Text") == null) ? "" : intent.getSlot("Text").getValue();
+
+        StringBuilder textToRecord = new StringBuilder();
+        textToRecord.append("A new ");
+        if ((priority != null) && (priority != "")) {
+            textToRecord.append(" " + priority + " ");
+        }
+        textToRecord.append("bug was created ");
+        if ((person != null) && (person != "")) {
+            textToRecord.append("and assigned to " + person + " ");
+        }
+        textToRecord.append("containing " + bugdescription);
+        String speechPrefixContent = "<p>" + textToRecord.toString() + " </p>";
+        String cardPrefixContent = textToRecord.toString();
+        String cardTitle = textToRecord.toString();
+
+        String speechOutput = "";
+
+        StringBuilder speechOutputBuilder = new StringBuilder();
+        speechOutputBuilder.append(speechPrefixContent);
+
+        StringBuilder cardOutputBuilder = new StringBuilder();
+        cardOutputBuilder.append(cardPrefixContent);
+
+        speechOutputBuilder.append(" Wanna do anything else?");
+        cardOutputBuilder.append(" Wanna do anything else?");
+
+        speechOutput = speechOutputBuilder.toString();
+
+
+        // Create the Simple card content.
+        SimpleCard card = new SimpleCard();
+        card.setTitle(cardTitle);
+        card.setContent(cardOutputBuilder.toString());
+
+        // After reading the first 3 events, set the count to 3 and add the events
+        // to the session attributes
+        //session.setAttribute(SESSION_INTENT_INDEX, PAGINATION_SIZE);
+        //session.setAttribute(SESSION_INTENT_TEXT, intentAsText);
+
+        String repromptText =
+                "With optimizer, you can say anything."
+                        + " Now, which do you want me to record for you?";
 
         SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
         response.setCard(card);

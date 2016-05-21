@@ -1,0 +1,39 @@
+take notes Today is a lovely day and I managed to solve two bugs but still have three in progress. I had some problems yesterday with the git access and today with the email access.
+take notes
+take notes Slots are arguments to intents. In each sample utterance, for all slot types except AMAZON.LITERAL, represent a slot value as the slot name in curly braces: {SlotName}. The AMAZON.LITERAL slot type also requires word values for the slot inline: {slot value|SlotName}.
+take notes for three minutes
+create a Ptwo bug for Daniel containing Loging page dose not work
+open bugs
+
+
+Working
+1. Scenario - Bug reports
+bugs report
+what is the number of open bugs
+open bugs
+
+
+2. Scenario - Release date
+how many days we have till the next release
+days till next release
+release report
+
+
+3. Scenario - Create a new task
+create new task verify QA ready bugs for Bogdan
+new task code review for Andreea
+new task review code for Ovidiu
+
+Alexa, set the timer for ten seconds
+Alexa, play NPR
+
+----
+4. Scenario - Create a new bug
+create a Ptwo bug for Daniel containing app is crashing after some time
+new bug web service is crashing after some time
+
+5. Scenario - default commands
+
+
+----
+for

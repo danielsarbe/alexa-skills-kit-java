@@ -1,0 +1,79 @@
+{
+  "intents": [
+    {
+      "intent": "GetFirstEventIntent",
+      "slots": [
+        {
+          "name": "day",
+          "type": "AMAZON.DATE"
+        }
+      ]
+    },
+    {
+      "intent": "RawText",
+      "slots": [
+        {
+          "name": "Text",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "BugSimple",
+      "slots": [
+        {
+          "name": "Text",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "BugComplex",
+      "slots": [
+        {
+          "name": "priority",
+          "type": "PRIORITY"
+        },
+        {
+          "name": "person",
+          "type": "PERSON"
+        },
+        {
+          "name": "Text",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "Task",
+      "slots": [
+        {
+          "name": "phrase",
+          "type": "AMAZON.LITERAL"
+        },
+        {
+          "name": "person",
+          "type": "PERSON"
+        }
+      ]
+    },
+    {
+      "intent": "Bugs"
+    },
+    {
+      "intent": "Project"
+    },
+    {
+      "intent": "GetNextEventIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
