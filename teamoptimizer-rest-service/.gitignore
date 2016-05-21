@@ -1,0 +1,13 @@
+.idea
+*.iws
+*.ipr
+*.iml
+.idea
+.idea-backup
+*/build
+.gradle
+*.iws
+*.ipr
+build
+target/*
+*/target

@@ -35,10 +35,10 @@ public class SentimentAnalysisService {
     public void init() {
         Properties pipelineProps = new Properties();
         Properties tokenizerProps = null;
-        pipelineProps.setProperty("annotators", "parse, sentiment");
+        pipelineProps.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
         pipelineProps.setProperty("enforceRequirements", "false");
         tokenizerProps = new Properties();
-        tokenizerProps.setProperty("annotators", "tokenize, ssplit");
+        tokenizerProps.setProperty("annotators", "tokenize, ssplit, tokenize, ssplit, pos, lemma");
 
         tokenizer = (tokenizerProps == null) ? null : new StanfordCoreNLP(tokenizerProps);
         pipeline = new StanfordCoreNLP(pipelineProps);
@@ -120,7 +120,7 @@ public class SentimentAnalysisService {
 
     static final String DEFAULT_TLPP_CLASS = "edu.stanford.nlp.parser.lexparser.EnglishTreebankParserParams";
 
-    public static void main(String[] args) {
+    public static void main23(String[] args) {
         SentimentAnalysisService sentimentAnalysisService = new SentimentAnalysisService();
         //sentimentAnalysisService.init();
 
@@ -133,7 +133,7 @@ public class SentimentAnalysisService {
 
     }
 
-    public static void main2(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         String text = "They could have almost heard the yowling from the Oval Office and the Pentagon after Safer's 1965 expose of a U.S. military atrocity in Vietnam that played an early role in changing Americans' view of the war.\n" +
                 "\n" +
                 "They may have felt a flush of gratitude on learning that Safer's 1983 investigation of justice gone awry resulted in the release of a Texas man wrongfully sentenced to life in prison.";
@@ -148,5 +148,9 @@ public class SentimentAnalysisService {
             String sentiment = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
             logger.info(sentiment + "\t" + sentence);
         }
+    }
+
+    public StanfordCoreNLP getPipeline() {
+        return pipeline;
     }
 }

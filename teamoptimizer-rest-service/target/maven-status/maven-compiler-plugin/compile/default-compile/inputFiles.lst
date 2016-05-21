@@ -1,4 +1,11 @@
-c:\lab\demo\src\main\java\com\example\DatabaseLoader.java
-c:\lab\demo\src\main\java\com\example\DemoApplication.java
-c:\lab\demo\src\main\java\com\example\Employee.java
-c:\lab\demo\src\main\java\com\example\EmployeeRepository.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/service/SentimentAnalysisService.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/Employee.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/EmployeeRepository.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/DatabaseLoader.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/other/SimpleExample.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/RestConfiguration.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/DemoApplication.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/controller/AnalyzeController.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/controller/AnalyzeResponse.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/controller/Greeting.java
+/home/opetridean/dev/hackaton/alexa-skills-kit-java/teamoptimizer-rest-service/src/main/java/com/example/controller/GreetingController.java
