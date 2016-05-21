@@ -184,6 +184,8 @@ public class TeamOptimizerSpeechlet implements Speechlet {
             return handleRawTextFirstEventRequest(intent, session);
         } else if ("Bugs".equals(intentName)) {
             return handleOpenBugsRequest(intent, session);
+        } else if ("Task".equals(intentName)) {
+            return handleTaskRequest(intent, session);
         } else if (("BugSimple".equals(intentName)) || ("BugComplex".equals(intentName)) || ("CreateBug".equals(intentName))) {
             return handleCreateBugsRequest(intent, session);
         } else if ("Project".equals(intentName)) {
@@ -497,6 +499,48 @@ public class TeamOptimizerSpeechlet implements Speechlet {
         response.setCard(card);
         return response;
     }
+
+    private SpeechletResponse handleTaskRequest(Intent intent, Session session) {
+        Slot phrase = intent.getSlot("phrase");
+        Slot person = intent.getSlot("person");
+
+        String speechPrefixContent = "<p>A new task " + phrase.getValue() + " was created for " + person.getValue() + "</p>";
+        String cardPrefixContent = "A new task " + phrase.getValue() + " was created for " + person.getValue();
+        String cardTitle = "A new task " + phrase.getValue() + " was created for " + person.getValue();
+
+        String speechOutput = "";
+
+        StringBuilder speechOutputBuilder = new StringBuilder();
+        speechOutputBuilder.append(speechPrefixContent);
+
+        StringBuilder cardOutputBuilder = new StringBuilder();
+        cardOutputBuilder.append(cardPrefixContent);
+
+        speechOutputBuilder.append(" Wanna do anything else?");
+        cardOutputBuilder.append(" Wanna do anything else?");
+
+        speechOutput = speechOutputBuilder.toString();
+
+
+        // Create the Simple card content.
+        SimpleCard card = new SimpleCard();
+        card.setTitle(cardTitle);
+        card.setContent(cardOutputBuilder.toString());
+
+        // After reading the first 3 events, set the count to 3 and add the events
+        // to the session attributes
+        //session.setAttribute(SESSION_INTENT_INDEX, PAGINATION_SIZE);
+        //session.setAttribute(SESSION_INTENT_TEXT, intentAsText);
+
+        String repromptText =
+                "With optimizer, you can say anything."
+                        + " Now, which do you want me to record for you?";
+        SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
+        //response.setShouldEndSession(false);
+        response.setCard(card);
+        return response;
+    }
+
     private SpeechletResponse handleCreateBugsRequest(Intent intent, Session session) {
         String person = (intent.getSlot("person") == null) ? "" : intent.getSlot("person").getValue();
         String priority = (intent.getSlot("priority") == null) ? "" : intent.getSlot("priority").getValue();

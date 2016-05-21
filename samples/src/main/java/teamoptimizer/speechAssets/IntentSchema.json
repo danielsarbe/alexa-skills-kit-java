@@ -45,27 +45,23 @@
       ]
     },
     {
-      "intent": "Bugs"
-    },
-    {
-      "intent": "Project"
-    },
-    {
-      "intent": "CreateBug",
+      "intent": "Task",
       "slots": [
         {
-          "name": "priority",
-          "type": "PRIORITY"
+          "name": "phrase",
+          "type": "AMAZON.LITERAL"
         },
         {
           "name": "person",
           "type": "PERSON"
-        },
-        {
-          "name": "Text",
-          "type": "AMAZON.LITERAL"
         }
       ]
+    },
+    {
+      "intent": "Bugs"
+    },
+    {
+      "intent": "Project"
     },
     {
       "intent": "GetNextEventIntent"

@@ -24,9 +24,12 @@ Project next release date
 Project how many days we have till the next release
 Project release report
 
-Task new task {code review|phrase} for {person}
-Task new task {verify QA ready bugs|phrase} for {person}
-Task new task {improve code coverage|phrase} for {person}
+CreateBug create a {priority} bug for {person} containing {bugdescription|Text}
+CreateBug create a bug for {person} containing {bugdescription|Text}
+CreateBug create a bug containing {bugdescription|Text}
+CreateBug create a new bug {bugdescription|Text}
+CreateBug new bug {bugdescription|Text}
+CreateBug create new issue {bugdescription|Text}
 
 AMAZON.StopIntent no
 AMAZON.StopIntent nope
