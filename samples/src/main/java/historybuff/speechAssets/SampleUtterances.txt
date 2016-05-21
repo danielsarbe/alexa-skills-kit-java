@@ -13,3 +13,7 @@ AMAZON.StopIntent no
 AMAZON.StopIntent nope
 AMAZON.StopIntent no thanks
 AMAZON.StopIntent no thank you
+
+RawText {this is a sentence|Text}
+RawText {every season is getting worse|Text}
+RawText listen {text|Text}

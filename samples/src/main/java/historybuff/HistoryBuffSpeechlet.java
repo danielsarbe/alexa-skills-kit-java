@@ -1,11 +1,11 @@
 /**
-    Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
-    Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-
-        http://aws.amazon.com/apache2.0/
-
-    or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
+ * <p>
+ * http://aws.amazon.com/apache2.0/
+ * <p>
+ * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 package historybuff;
 
@@ -46,7 +46,7 @@ import com.amazon.speech.ui.SimpleCard;
 
 /**
  * This sample shows how to create a Lambda function for handling Alexa Skill requests that:
- * 
+ * <p>
  * <ul>
  * <li><b>Web service</b>: communicate with an external web service to get events for specified days
  * in history (Wikipedia API)</li>
@@ -70,7 +70,7 @@ import com.amazon.speech.ui.SimpleCard;
  * <p>
  * Alexa: "Good bye!"
  * <p>
- * 
+ * <p>
  * <b>Dialog model</b>
  * <p>
  * User: "Alexa, open History Buff"
@@ -120,6 +120,10 @@ public class HistoryBuffSpeechlet implements Speechlet {
      */
     private static final String SESSION_TEXT = "text";
 
+
+    private static final String SESSION_INTENT_INDEX = "intentIndex";
+
+    private static final String SESSION_INTENT_TEXT = "text";
     /**
      * Constant defining session attribute key for the intent slot key for the date of events.
      */
@@ -177,6 +181,8 @@ public class HistoryBuffSpeechlet implements Speechlet {
 
         if ("GetFirstEventIntent".equals(intentName)) {
             return handleFirstEventRequest(intent, session);
+        } else if ("RawText".equals(intentName)) {
+            return handleRawTextFirstEventRequest(intent, session);
         } else if ("GetNextEventIntent".equals(intentName)) {
             return handleNextEventRequest(session);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
@@ -216,9 +222,10 @@ public class HistoryBuffSpeechlet implements Speechlet {
 
     /**
      * Function to handle the onLaunch skill behavior.
-     * 
+     *
      * @return SpeechletResponse object with voice/card response to return to the user
      */
+
     private SpeechletResponse getWelcomeResponse() {
         String speechOutput = "History buff. What day do you want events for?";
         // If the user either does not reply to the welcome message or says something that is not
@@ -236,9 +243,8 @@ public class HistoryBuffSpeechlet implements Speechlet {
      * representation of that slot value. If the user provides a date, then use that, otherwise use
      * today. The date is in server time, not in the user's time zone. So "today" for the user may
      * actually be tomorrow.
-     * 
-     * @param intent
-     *            the intent object containing the day slot
+     *
+     * @param intent the intent object containing the day slot
      * @return the Calendar representation of that date
      */
     private Calendar getCalendar(Intent intent) {
@@ -263,11 +269,9 @@ public class HistoryBuffSpeechlet implements Speechlet {
      * Prepares the speech to reply to the user. Obtain events from Wikipedia for the date specified
      * by the user (or for today's date, if no date is specified), and return those events in both
      * speech and SimpleCard format.
-     * 
-     * @param intent
-     *            the intent object which contains the date slot
-     * @param session
-     *            the session object
+     *
+     * @param intent  the intent object which contains the date slot
+     * @param session the session object
      * @return SpeechletResponse object with voice/card response to return to the user
      */
     private SpeechletResponse handleFirstEventRequest(Intent intent, Session session) {
@@ -319,7 +323,7 @@ public class HistoryBuffSpeechlet implements Speechlet {
 
             // After reading the first 3 events, set the count to 3 and add the events
             // to the session attributes
-            session.setAttribute(SESSION_INDEX, PAGINATION_SIZE);
+            session.setAttribute(SESSION_INTENT_INDEX, PAGINATION_SIZE);
             session.setAttribute(SESSION_TEXT, events);
 
             SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
@@ -329,14 +333,72 @@ public class HistoryBuffSpeechlet implements Speechlet {
     }
 
     /**
+     * Prepares the speech to reply to the user. Obtain events from Wikipedia for the date specified
+     * by the user (or for today's date, if no date is specified), and return those events in both
+     * speech and SimpleCard format.
+     *
+     * @param intent  the intent object which contains the date slot
+     * @param session the session object
+     * @return SpeechletResponse object with voice/card response to return to the user
+     */
+    private SpeechletResponse handleRawTextFirstEventRequest(Intent intent, Session session) {
+//        Calendar calendar = getCalendar(intent);
+//        String month = MONTH_NAMES[calendar.get(Calendar.MONTH)];
+//        String date = Integer.toString(calendar.get(Calendar.DATE));
+        String intentAsText = "";
+        for (Slot slot : intent.getSlots().values()) {
+            log.info(slot.getName() + ": <" + slot.getValue() + ">");
+            intentAsText = intentAsText + slot.getValue();
+        }
+        log.info("intentAsText: <" + intentAsText + ">");
+        String speechPrefixContent = "<p>I understood that</p> ";
+        String cardPrefixContent = "For now I will only tell you back your intent";
+        String cardTitle = "RawText on intent " + intentAsText;
+
+        String speechOutput = "";
+
+        StringBuilder speechOutputBuilder = new StringBuilder();
+        speechOutputBuilder.append(speechPrefixContent);
+        StringBuilder cardOutputBuilder = new StringBuilder();
+        cardOutputBuilder.append(cardPrefixContent);
+
+        speechOutputBuilder.append("<p>");
+        speechOutputBuilder.append(intentAsText);
+        speechOutputBuilder.append("</p> ");
+        cardOutputBuilder.append(intentAsText + "\n");
+
+        speechOutputBuilder.append(" Wanna do anything else?");
+        cardOutputBuilder.append(" Wanna do anything else?");
+
+        speechOutput = speechOutputBuilder.toString();
+
+        String repromptText =
+                "With History Buff, you can say anything."
+                        + " Now, which do you want me to record for you?";
+
+        // Create the Simple card content.
+        SimpleCard card = new SimpleCard();
+        card.setTitle(cardTitle);
+        card.setContent(cardOutputBuilder.toString());
+
+        // After reading the first 3 events, set the count to 3 and add the events
+        // to the session attributes
+        session.setAttribute(SESSION_INTENT_INDEX, PAGINATION_SIZE);
+        session.setAttribute(SESSION_INTENT_TEXT, intentAsText);
+
+        SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
+        response.setCard(card);
+        return response;
+    }
+
+    /**
      * Prepares the speech to reply to the user. Obtains the list of events as well as the current
      * index from the session attributes. After getting the next set of events, increment the index
      * and store it back in session attributes. This allows us to obtain new events without making
      * repeated network calls, by storing values (events, index) during the interaction with the
      * user.
-     * 
-     * @param session
-     *            object containing session attributes with events list and index
+     *
+     * @param session object containing session attributes with events list and index
      * @return SpeechletResponse object with voice/card response to return to the user
      */
     private SpeechletResponse handleNextEventRequest(Session session) {
@@ -388,11 +450,9 @@ public class HistoryBuffSpeechlet implements Speechlet {
     /**
      * Download JSON-formatted list of events from Wikipedia, for a defined day/date, and return a
      * String array of the events, with each event representing an element in the array.
-     * 
-     * @param month
-     *            the month to get events for, example: April
-     * @param date
-     *            the date to get events for, example: 7
+     *
+     * @param month the month to get events for, example: April
+     * @param date  the date to get events for, example: 7
      * @return String array of events for that date, 1 event per element of the array
      */
     private ArrayList<String> getJsonEventsFromWikipedia(String month, String date) {
@@ -423,9 +483,8 @@ public class HistoryBuffSpeechlet implements Speechlet {
      * Parse JSON-formatted list of events/births/deaths from Wikipedia, extract list of events and
      * split the events into a String array of individual events. Run Regex matchers to make the
      * list pretty by adding a comma after the year to add a pause, and by removing a unicode char.
-     * 
-     * @param text
-     *            the JSON formatted list of events/births/deaths for a certain date
+     *
+     * @param text the JSON formatted list of events/births/deaths for a certain date
      * @return String array of events for that date, 1 event per element of the array
      */
     private ArrayList<String> parseJson(String text) {
@@ -463,19 +522,15 @@ public class HistoryBuffSpeechlet implements Speechlet {
 
     /**
      * Wrapper for creating the Ask response from the input strings.
-     * 
-     * @param stringOutput
-     *            the output to be spoken
-     * @param isOutputSsml
-     *            whether the output text is of type SSML
-     * @param repromptText
-     *            the reprompt for if the user doesn't reply or is misunderstood.
-     * @param isRepromptSsml
-     *            whether the reprompt text is of type SSML
+     *
+     * @param stringOutput   the output to be spoken
+     * @param isOutputSsml   whether the output text is of type SSML
+     * @param repromptText   the reprompt for if the user doesn't reply or is misunderstood.
+     * @param isRepromptSsml whether the reprompt text is of type SSML
      * @return SpeechletResponse the speechlet response
      */
     private SpeechletResponse newAskResponse(String stringOutput, boolean isOutputSsml,
-            String repromptText, boolean isRepromptSsml) {
+                                             String repromptText, boolean isRepromptSsml) {
         OutputSpeech outputSpeech, repromptOutputSpeech;
         if (isOutputSsml) {
             outputSpeech = new SsmlOutputSpeech();

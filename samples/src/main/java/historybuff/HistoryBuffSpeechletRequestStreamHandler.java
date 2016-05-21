@@ -32,7 +32,7 @@ public class HistoryBuffSpeechletRequestStreamHandler extends SpeechletRequestSt
          * Alexa Skill and put the relevant Application Ids in this Set.
          */
         supportedApplicationIds = new HashSet<String>();
-        // supportedApplicationIds.add("amzn1.echo-sdk-ams.app.[unique-value-here]");
+        supportedApplicationIds.add("amzn1.echo-sdk-ams.app.65c23d71-96d4-4de7-9830-f23e47ad266b");
     }
 
     public HistoryBuffSpeechletRequestStreamHandler() {

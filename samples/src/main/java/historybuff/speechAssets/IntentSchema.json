@@ -10,6 +10,15 @@
       ]
     },
     {
+      "intent": "RawText",
+      "slots": [
+        {
+          "name": "Text",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
+    },
+    {
       "intent": "GetNextEventIntent"
     },
     {
