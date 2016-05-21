@@ -1,0 +1,37 @@
+GetFirstEventIntent get events for {day}
+GetFirstEventIntent give me events for {day}
+GetFirstEventIntent what happened on {day}
+GetFirstEventIntent what happened
+
+GetNextEventIntent yes
+GetNextEventIntent yup
+GetNextEventIntent sure
+GetNextEventIntent yes please
+
+BugSimple new bug {text|Text}
+BugComplex create a {priority} bug for {person} containing {text|Text}
+
+RawText take notes {text|Text}
+RawText {some text take notes|Text}
+
+Bugs open bugs
+Bugs what is the number of open bugs
+Bugs number of open bugs
+Bugs bugs report
+
+Project days till the next release
+Project next release date
+Project how many days we have till the next release
+Project release report
+
+CreateBug create a {priority} bug for {person} containing {bugdescription|Text}
+CreateBug create a bug for {person} containing {bugdescription|Text}
+CreateBug create a bug containing {bugdescription|Text}
+CreateBug create a new bug {bugdescription|Text}
+CreateBug new bug {bugdescription|Text}
+CreateBug create new issue {bugdescription|Text}
+
+AMAZON.StopIntent no
+AMAZON.StopIntent nope
+AMAZON.StopIntent no thanks
+AMAZON.StopIntent no thank you
