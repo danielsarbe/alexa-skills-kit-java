@@ -17,12 +17,10 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -332,6 +330,14 @@ public class HistoryBuffSpeechlet implements Speechlet {
         }
     }
 
+    public static Map<String, Integer> countWords(String input) {
+        return Pattern.compile("\\W+")
+                .splitAsStream(input)
+                .collect(Collectors.groupingBy(String::toLowerCase,
+                        Collectors.summingInt(s -> 1)))
+                ;
+    }
+
     /**
      * Prepares the speech to reply to the user. Obtain events from Wikipedia for the date specified
      * by the user (or for today's date, if no date is specified), and return those events in both
@@ -366,6 +372,20 @@ public class HistoryBuffSpeechlet implements Speechlet {
         speechOutputBuilder.append(intentAsText);
         speechOutputBuilder.append("</p> ");
         cardOutputBuilder.append(intentAsText + "\n");
+
+        Map<String, Integer> wordCount = countWords(intentAsText).entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(5).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (e1, e2) -> e1, LinkedHashMap::new));
+
+        StringBuilder topWords = new StringBuilder();
+        topWords.append("<p>Most used words are:</p>");
+        for (Map.Entry<String, Integer> entry : wordCount.entrySet()) {
+            topWords.append("<p><break time=\"1s\"/>" + entry.getKey() + " used <say-as interpret-as=\"number\">" + entry.getValue() + "</say-as> times <break time=\"2s\"/></p>");
+        }
+
+        speechOutputBuilder.append("<p>" + topWords + "</p>");
+        cardOutputBuilder.append(topWords);
 
         speechOutputBuilder.append(" Wanna do anything else?");
         cardOutputBuilder.append(" Wanna do anything else?");

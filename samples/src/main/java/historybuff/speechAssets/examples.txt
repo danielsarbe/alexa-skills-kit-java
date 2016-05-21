@@ -1,0 +1,3 @@
+take notes Today is a lovely day and I managed to solve two bugs but still have three in progress. I had some problems yesterday with the git access and today with the email access.
+take notes Slots are arguments to intents. In each sample utterance, for all slot types except AMAZON.LITERAL, represent a slot value as the slot name in curly braces: {SlotName}. The AMAZON.LITERAL slot type also requires word values for the slot inline: {slot value|SlotName}.
+take notes for three minutes
