@@ -8,8 +8,9 @@ GetNextEventIntent yup
 GetNextEventIntent sure
 GetNextEventIntent yes please
 
-BugSimple new bug {text|Text}
-BugComplex create a {priority} bug for {person} containing {text|Text}
+BugComplex create a {priority} bug for {person} containing {application is crashing every minute|text}
+BugComplex create a {priority} bug for {person} containing {login is not working|text}
+BugComplex create a {priority} bug for {person} containing {combobox is not loaded|text}
 
 RawText take notes {text|Text}
 RawText {some text take notes|Text}

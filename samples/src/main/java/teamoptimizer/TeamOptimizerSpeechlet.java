@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.lesstif.jira.issue.*;
+import com.lesstif.jira.services.IssueService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,8 @@ import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
+
+import javax.naming.ConfigurationException;
 
 /**
  * This sample shows how to create a Lambda function for handling Alexa Skill requests that:
@@ -423,9 +427,19 @@ public class TeamOptimizerSpeechlet implements Speechlet {
     private SpeechletResponse handleOpenBugsRequest(Intent intent, Session session) {
         //Slot bugs = intent.getSlot("person");
 
-        String speechPrefixContent = "<p>We have 7 P1 P2 bugs open</p>";
-        String cardPrefixContent = "We have 7 P1 P2 bugs open";
-        String cardTitle = "We have 7 P1 P2 bugs open";
+        int openBugsHigh = 0;
+        int openBugsMedium = 0;
+        try {
+            openBugsHigh = getOpenBugs("high");
+            openBugsMedium = getOpenBugs("medium");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (org.apache.commons.configuration.ConfigurationException e) {
+            e.printStackTrace();
+        }
+        String speechPrefixContent = "<p>Currently there are " + openBugsHigh + " P1 bugs and " + openBugsMedium + " P2 bugs open</p>";
+        String cardPrefixContent = "We have " + openBugsHigh + " P1 bugs and " + openBugsMedium + " P2 bugs open";
+        String cardTitle = "We have " + openBugsHigh + " P1 bugs and " + openBugsMedium + " P2 bugs open";
 
         String speechOutput = "";
 
@@ -504,9 +518,17 @@ public class TeamOptimizerSpeechlet implements Speechlet {
         Slot phrase = intent.getSlot("phrase");
         Slot person = intent.getSlot("person");
 
-        String speechPrefixContent = "<p>A new task " + phrase.getValue() + " was created for " + person.getValue() + "</p>";
-        String cardPrefixContent = "A new task " + phrase.getValue() + " was created for " + person.getValue();
-        String cardTitle = "A new task " + phrase.getValue() + " was created for " + person.getValue();
+        String idTask = "";
+        try {
+            idTask = createTask(phrase.getValue(), person.getValue());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (org.apache.commons.configuration.ConfigurationException e) {
+            e.printStackTrace();
+        }
+        String speechPrefixContent = "<p>A new task " + phrase.getValue() + " was created for " + person.getValue() + " with id " + idTask + "</p>";
+        String cardPrefixContent = "A new task " + phrase.getValue() + " was created for " + person.getValue() + " with id " + idTask;
+        String cardTitle = "A new task " + phrase.getValue() + " was created for " + person.getValue() + " with id " + idTask;
 
         String speechOutput = "";
 
@@ -544,18 +566,33 @@ public class TeamOptimizerSpeechlet implements Speechlet {
     private SpeechletResponse handleCreateBugsRequest(Intent intent, Session session) {
         String person = (intent.getSlot("person") == null) ? "" : intent.getSlot("person").getValue();
         String priority = (intent.getSlot("priority") == null) ? "" : intent.getSlot("priority").getValue();
-        String bugdescription = (intent.getSlot("Text") == null) ? "" : intent.getSlot("Text").getValue();
+        String bugdescription = (intent.getSlot("text") == null) ? "" : intent.getSlot("text").getValue();
 
         StringBuilder textToRecord = new StringBuilder();
+        Priority priorityP = new Priority();
+        priorityP.setName("Medium");
+        if (priority.equals("Pone")) {
+            priorityP.setName("High");
+        }
+
+        String issueKey = "";
+        try {
+            issueKey = createBug(bugdescription, person, priorityP);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (org.apache.commons.configuration.ConfigurationException e) {
+            e.printStackTrace();
+        }
+
         textToRecord.append("A new ");
         if ((priority != null) && (priority != "")) {
-            textToRecord.append(" " + priority + " ");
+            textToRecord.append(priority + " ");
         }
-        textToRecord.append("bug was created ");
+        textToRecord.append("bug was created with id " + issueKey + " ");
         if ((person != null) && (person != "")) {
             textToRecord.append("and assigned to " + person + " ");
         }
-        textToRecord.append("containing " + bugdescription);
+        textToRecord.append("with description " + bugdescription);
         String speechPrefixContent = "<p>" + textToRecord.toString() + " </p>";
         String cardPrefixContent = textToRecord.toString();
         String cardTitle = textToRecord.toString();
@@ -591,6 +628,74 @@ public class TeamOptimizerSpeechlet implements Speechlet {
         SpeechletResponse response = newAskResponse("<speak>" + speechOutput + "</speak>", true, repromptText, false);
         response.setCard(card);
         return response;
+    }
+
+    public static String createTask(String description, String userName) throws IOException, org.apache.commons.configuration.ConfigurationException {
+        Issue issue = new Issue();
+
+        IssueFields fields = new IssueFields();
+
+        fields.setProjectKey("TEST")
+                .setSummary(description)
+                .setIssueTypeName(IssueType.ISSUE_TYPE_TASK)
+                .setDescription(description)
+                .setAssigneeName(userName);
+
+        // Change Reporter need admin role
+//        fields.setReporterName("")
+//                .setPriorityName(Priority.PRIORITY_CRITICAL)
+//                .setLabels(new String[]{"bugfix","blitz_test"})
+//                .setComponentsByStringArray(new String[]{"Component-1", "Component-2"})
+//                .addAttachment("readme.md")
+//                .addAttachment("bug-description.pdf")
+//                .addAttachment("screen_capture.png");
+
+        issue.setFields(fields);
+
+
+        IssueService issueService = new IssueService();
+
+        Issue genIssue = issueService.createIssue(issue);
+
+        String issueKey = genIssue.getKey();
+
+        System.out.println(issueKey);
+        return issueKey;
+    }
+
+    public static String createBug(String description, String userName, Priority priority) throws IOException, org.apache.commons.configuration.ConfigurationException {
+        Issue issue = new Issue();
+
+        IssueFields fields = new IssueFields();
+
+        fields.setProjectKey("TEST")
+                .setSummary(description)
+                .setIssueTypeName(IssueType.ISSUE_TYPE_BUG)
+                .setDescription(description)
+                .setAssigneeName(userName)
+                .setPriority(priority);
+
+
+        issue.setFields(fields);
+
+
+        IssueService issueService = new IssueService();
+
+        Issue genIssue = issueService.createIssue(issue);
+
+        String issueKey = genIssue.getKey();
+
+        System.out.println(issueKey);
+        return issueKey;
+    }
+
+    public static int getOpenBugs(String priority) throws IOException, org.apache.commons.configuration.ConfigurationException {
+
+        IssueService issueService = new IssueService();
+        IssueSearchResult issuesFromQuery = issueService.getIssuesFromQuery("issuetype = Bug AND priority=" + priority);
+
+        System.out.println(issuesFromQuery.getIssues().size());
+        return issuesFromQuery.getIssues().size();
     }
 
     /**

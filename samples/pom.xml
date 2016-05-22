@@ -62,6 +62,11 @@
       <artifactId>aws-java-sdk-dynamodb</artifactId>
       <version>1.9.40</version>
     </dependency>
+    <dependency>
+      <groupId>com.lesstif</groupId>
+      <artifactId>jira-rest-api</artifactId>
+      <version>0.8.0</version>
+    </dependency>
   </dependencies>
 
   <properties>

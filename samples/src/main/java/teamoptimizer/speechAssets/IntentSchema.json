@@ -39,7 +39,7 @@
           "type": "PERSON"
         },
         {
-          "name": "Text",
+          "name": "text",
           "type": "AMAZON.LITERAL"
         }
       ]

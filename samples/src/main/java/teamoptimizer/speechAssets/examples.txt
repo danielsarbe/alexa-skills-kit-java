@@ -24,6 +24,13 @@ create new task verify QA ready bugs for Bogdan
 new task code review for Andreea
 new task review code for Ovidiu
 
+4. Scenario - Create new bug
+create a Pone bug for Andreea containing application is crashing every minute
+create a Ptwo bug for Dan containing combobox is not loaded
+
+5. Recheck report
+open bugs
+
 Alexa, set the timer for ten seconds
 Alexa, play NPR
 
